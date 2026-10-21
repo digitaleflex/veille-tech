@@ -11,7 +11,6 @@ interface TrendsWidgetProps {
 
 const TrendsWidget: React.FC<TrendsWidgetProps> = ({ topTrends, variants }) => {
     const router = useRouter();
-    const navigate = (path: string) => router.push(path);
 
     return (
         <motion.div
@@ -23,34 +22,38 @@ const TrendsWidget: React.FC<TrendsWidgetProps> = ({ topTrends, variants }) => {
                     <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
                         <Brain size={20} />
                     </div>
-                    <h3 className="font-bold text-white">Radar IA : Tendances mondiales</h3>
+                    <h3 className="font-bold text-white">Radar IA : Tendances</h3>
                 </div>
                 <button
-                    onClick={() => navigate('/intelligence')}
+                    onClick={() => router.push('/intelligence')}
                     className="text-xs text-emerald-400 hover:underline flex items-center gap-1"
                 >
                     Explorer <ChevronRight size={14} />
                 </button>
             </div>
 
-            <div className="space-y-3">
-                {topTrends.map((trend, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-3 bg-dark-900/40 rounded-xl border border-slate-700/30">
-                        <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
-                                <TrendingUp size={14} />
+            {topTrends.length > 0 ? (
+                <div className="space-y-3">
+                    {topTrends.map((trend) => (
+                        <div key={trend.technology} className="flex items-center justify-between p-3 bg-dark-900/40 rounded-xl border border-slate-700/30">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                                    <TrendingUp size={14} />
+                                </div>
+                                <span className="text-sm font-medium text-white">{trend.technology}</span>
                             </div>
-                            <span className="text-sm font-medium text-white">{trend.technology}</span>
-                        </div>
-                        <div className="flex items-center gap-4">
                             <div className="text-right">
-                                <p className="text-xs font-bold text-emerald-400">+{((trend.predictedMentions - trend.currentMentions) / trend.currentMentions * 100).toFixed(1)}%</p>
-                                <p className="text-[10px] text-slate-500 uppercase">Impact: {trend.impactScore}</p>
+                                <p className="text-xs font-bold text-emerald-400">{trend.currentMentions} mentions</p>
+                                <p className="text-[10px] text-slate-500 uppercase">Impact : {trend.impactScore}</p>
                             </div>
                         </div>
-                    </div>
-                ))}
-            </div>
+                    ))}
+                </div>
+            ) : (
+                <p className="text-sm leading-6 text-slate-400">
+                    Aucune tendance vérifiée n’est disponible pour le moment. Les estimations seront affichées uniquement lorsqu’elles seront calculées à partir de données réelles.
+                </p>
+            )}
         </motion.div>
     );
 };
