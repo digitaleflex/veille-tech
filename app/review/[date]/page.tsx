@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { auth } from '@/auth';
 import { prisma } from '@/lib/server/prisma';
-import { Share2, Printer, FileDown, Copy } from 'lucide-react';
+import ReviewActions from '@/components/review/ReviewActions';
 
 async function getReview(date: string, viewerUserId?: string) {
   return prisma.review.findFirst({
@@ -82,26 +82,14 @@ export default async function ReviewDetailPage({
           </ul>
         </section>
 
-        <section className="sticky bottom-8">
-          <div className="mx-auto flex max-w-sm justify-around rounded-full border border-slate-700 bg-dark-800/80 p-3 shadow-lg backdrop-blur-lg">
-            <button type="button" aria-label="Partager" className="flex flex-col items-center text-slate-300 transition-colors hover:text-white">
-              <Share2 className="h-6 w-6" />
-              <span className="mt-1 text-xs">Partager</span>
-            </button>
-            <button type="button" aria-label="Imprimer" className="flex flex-col items-center text-slate-300 transition-colors hover:text-white">
-              <Printer className="h-6 w-6" />
-              <span className="mt-1 text-xs">Imprimer</span>
-            </button>
-            <button type="button" aria-label="Télécharger Markdown" className="flex flex-col items-center text-slate-300 transition-colors hover:text-white">
-              <FileDown className="h-6 w-6" />
-              <span className="mt-1 text-xs">Markdown</span>
-            </button>
-            <button type="button" aria-label="Copier" className="flex flex-col items-center text-slate-300 transition-colors hover:text-white">
-              <Copy className="h-6 w-6" />
-              <span className="mt-1 text-xs">Copier</span>
-            </button>
-          </div>
-        </section>
+        <ReviewActions
+          title={review.formattedDate}
+          date={review.date}
+          summary={review.flashSummary}
+          analysis={review.aiAnalysis || ''}
+          content={review.content}
+        />
+
       </article>
     </div>
   );
