@@ -44,12 +44,12 @@ Rendre l'application prévisible, sûre et vérifiable avant d'ajouter de nouvel
 - [ ] Vérifier le lockfile, le typecheck, le schéma Prisma, les tests et le build sur un runner propre.
 - [ ] Réparer la configuration ESLint et rendre le lint bloquant.
 - [ ] Installer et configurer Playwright avant de réintroduire les tests E2E dans la CI.
-- [ ] Retirer ou réécrire les workflows hérités utilisant les dossiers `client/` et `server/`.
+- [x] Retirer les workflows hérités utilisant les dossiers `client/` et `server/`.
 - [ ] Configurer un vrai déploiement seulement après validation de l'environnement cible, des secrets et de la stratégie de retour arrière.
 
 ## P2 — Interface et expérience
 
-- [ ] Remplacer les statistiques de démonstration du tableau de bord par les données réelles.
+- [x] Retirer les métriques fictives du tableau de bord et afficher des états vides honnêtes en attendant les données réelles.
 - [ ] Connecter le champ de recherche de la page d'accueil au parcours de recherche.
 - [ ] Implémenter ou retirer les boutons d'action inertes sur la page de détail.
 - [ ] Vérifier les états de chargement, vide, erreur et absence d'autorisation.
@@ -60,6 +60,7 @@ Rendre l'application prévisible, sûre et vérifiable avant d'ajouter de nouvel
 - [x] Aligner le README sur la stack déclarée actuelle.
 - [ ] Corriger les liens de documentation cassés et vérifier les commandes d'installation.
 - [ ] Cartographier les dépendances réellement utilisées et supprimer les dépendances mortes seulement après vérification.
+- [x] Supprimer la route de test d'e-mail non essentielle, qui permettait à tout utilisateur authentifié de déclencher un envoi vers une adresse arbitraire.
 - [ ] Remplacer les usages non nécessaires de `any` par des types explicites.
 - [ ] Documenter les variables d'environnement sans valeurs secrètes.
 
