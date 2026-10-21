@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, TrendingUp, ChevronRight } from 'lucide-react';
+import { BarChart3, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 interface StatsWidgetProps {
@@ -13,7 +13,6 @@ interface StatsWidgetProps {
 
 const StatsWidget: React.FC<StatsWidgetProps> = ({ stats, variants }) => {
     const router = useRouter();
-    const navigate = (path: string) => router.push(path);
 
     return (
         <motion.div
@@ -28,27 +27,29 @@ const StatsWidget: React.FC<StatsWidgetProps> = ({ stats, variants }) => {
                     <h3 className="font-bold text-white">Veille Pulse</h3>
                 </div>
                 <button
-                    onClick={() => navigate('/stats')}
+                    onClick={() => router.push('/stats')}
                     className="text-xs text-primary hover:underline flex items-center gap-1"
                 >
                     Détails <ChevronRight size={14} />
                 </button>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                    <p className="text-slate-500 text-xs uppercase font-bold tracking-wider">Volume Total</p>
-                    <p className="text-3xl font-black text-white">{stats?.totalReviews || 0}</p>
-                    <p className="text-[10px] text-emerald-400 flex items-center gap-1">
-                        <TrendingUp size={10} /> +12% cette semaine
-                    </p>
+            {stats ? (
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                        <p className="text-slate-500 text-xs uppercase font-bold tracking-wider">Revues enregistrées</p>
+                        <p className="text-3xl font-black text-white">{stats.totalReviews}</p>
+                    </div>
+                    <div className="space-y-1">
+                        <p className="text-slate-500 text-xs uppercase font-bold tracking-wider">Catégorie principale</p>
+                        <p className="text-2xl font-bold text-primary">{stats.topCategory}</p>
+                    </div>
                 </div>
-                <div className="space-y-1">
-                    <p className="text-slate-500 text-xs uppercase font-bold tracking-wider">Top Catégorie</p>
-                    <p className="text-2xl font-bold text-primary">{stats?.topCategory || 'Mix'}</p>
-                    <p className="text-[10px] text-slate-400">Basé sur les 30 derniers jours</p>
-                </div>
-            </div>
+            ) : (
+                <p className="text-sm leading-6 text-slate-400">
+                    Les statistiques seront affichées lorsqu’elles seront reliées aux données réelles.
+                </p>
+            )}
 
             <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:opacity-20 transition-opacity">
                 <BarChart3 size={120} className="text-primary rotate-12" />
