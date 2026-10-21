@@ -7,68 +7,53 @@ export interface SearchReviewsParams {
     tags?: string[];
     dateFrom?: string;
     dateTo?: string;
-    userId?: string;
+    viewerUserId?: string;
 }
 
 export async function searchReviews(params: SearchReviewsParams) {
-    const { q, category, tags, dateFrom, dateTo, userId } = params;
-
+    const { q, category, tags, dateFrom, dateTo, viewerUserId } = params;
     const tagList = tags || [];
+
+    // The viewer identity must come from the authenticated session, never
+    // from a user-controlled query parameter.
+    const visibilityFilter: Prisma.ReviewWhereInput = viewerUserId
+        ? { OR: [{ isPublic: true }, { userId: viewerUserId }] }
+        : { isPublic: true };
 
     const whereClause: Prisma.ReviewWhereInput = {
         AND: [
-            // Text search
+            visibilityFilter,
             q
                 ? {
                     OR: [
                         { content: { contains: q, mode: 'insensitive' } },
                         { flashSummary: { contains: q, mode: 'insensitive' } },
                         { aiAnalysis: { contains: q, mode: 'insensitive' } },
-                    ] as Prisma.ReviewWhereInput[],
+                    ],
                 }
                 : {},
-            // Filters
-            category && category !== 'Mix'
-                ? { dominantCategory: category }
-                : {},
+            category && category !== 'Mix' ? { dominantCategory: category } : {},
             tagList.length > 0
                 ? {
                     ReviewToTag: {
                         some: {
-                            tags: {
-                                name: {
-                                    in: tagList,
-                                },
-                            },
+                            tags: { name: { in: tagList } },
                         },
                     },
                 }
                 : {},
             dateFrom ? { date: { gte: dateFrom } } : {},
             dateTo ? { date: { lte: dateTo } } : {},
-            userId ? { userId: userId } : {},
-        ].filter(Boolean) as Prisma.ReviewWhereInput[],
+        ],
     };
 
-    const results = await prisma.review.findMany({
+    return prisma.review.findMany({
         where: whereClause,
         include: {
-            ReviewToTag: {
-                include: {
-                    tags: true
-                }
-            },
+            ReviewToTag: { include: { tags: true } },
             sources: true,
-            user: {
-                select: {
-                    username: true,
-                },
-            },
+            user: { select: { username: true } },
         },
-        orderBy: {
-            date: 'desc',
-        },
+        orderBy: { date: 'desc' },
     });
-
-    return results;
 }
