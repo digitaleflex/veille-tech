@@ -1,44 +1,57 @@
 import { NextResponse } from 'next/server';
-import { headers } from 'next/headers'; // Import headers
+import { headers } from 'next/headers';
 import { prisma } from '@/lib/server/prisma';
 import { createReviewSchema, validateRequest } from '@/lib/schemas/validation';
 import { auth } from '@/auth';
 
 // GET /api/reviews?date=...&startDate=...&endDate=...&isPublic=...
 export async function GET(req: Request) {
+    const session = await auth.api.getSession({ headers: await headers() });
+    const userId = session?.user?.id;
     const { searchParams } = new URL(req.url);
     const date = searchParams.get('date');
     const startDate = searchParams.get('startDate');
     const endDate = searchParams.get('endDate');
     const isPublic = searchParams.get('isPublic');
 
+    // Public callers may only see public reviews. Signed-in users may see
+    // public reviews and their own reviews; an explicit private filter is
+    // restricted to the signed-in user's own private reviews.
+    const visibilityFilter = isPublic === 'true'
+        ? { isPublic: true }
+        : isPublic === 'false'
+            ? (userId ? { isPublic: false, userId } : null)
+            : (userId
+                ? { OR: [{ isPublic: true }, { userId }] }
+                : { isPublic: true });
+
+    if (!visibilityFilter) {
+        return NextResponse.json({ error: 'Non autorisé' }, { status: 401 });
+    }
+
     try {
-        // Get by specific date
         if (date) {
-            const review = await prisma.review.findUnique({
-                where: { date: String(date) },
-                include: { ReviewToTag: { include: { tags: true } }, sources: true, user: true },
+            const review = await prisma.review.findFirst({
+                where: { date, ...visibilityFilter },
+                include: {
+                    ReviewToTag: { include: { tags: true } },
+                    sources: true,
+                    user: { select: { id: true, username: true } },
+                },
             });
             return NextResponse.json(review || null);
         }
 
-        // Get by date range
-        if (startDate && endDate) {
-            const reviews = await prisma.review.findMany({
-                where: { date: { gte: String(startDate), lte: String(endDate) } },
-                include: { ReviewToTag: { include: { tags: true } }, sources: true },
-                orderBy: { date: 'desc' },
-            });
-            return NextResponse.json(reviews);
-        }
-
-        // Get all reviews (with optional filters)
-        const where: { isPublic?: boolean } = {};
-        if (isPublic !== null) where.isPublic = isPublic === 'true';
+        const dateFilter = startDate && endDate
+            ? { date: { gte: startDate, lte: endDate } }
+            : {};
 
         const reviews = await prisma.review.findMany({
-            where,
-            include: { ReviewToTag: { include: { tags: true } }, sources: true },
+            where: { ...dateFilter, ...visibilityFilter },
+            include: {
+                ReviewToTag: { include: { tags: true } },
+                sources: true,
+            },
             orderBy: { date: 'desc' },
         });
 
@@ -60,31 +73,30 @@ export async function POST(req: Request) {
 
     try {
         const body = await req.json();
-        // Validate request body
         const {
             content, sources, date, formattedDate, flashSummary, aiAnalysis,
             dominantCategory, newsCount, generationTime, isPublic, tags: tagNames, id
         } = validateRequest(createReviewSchema, body.review);
 
-        // Create or get tags
-        const tagOperations = (tagNames || []).map(async (tagName: string) => {
-            return await prisma.tag.upsert({
+        const tagOperations = (tagNames || []).map(async (tagName: string) =>
+            prisma.tag.upsert({
                 where: { name: tagName },
                 update: {},
                 create: { name: tagName },
-            });
-        });
+            })
+        );
         const tags = await Promise.all(tagOperations);
 
-        // Create review
         const newReview = await prisma.review.create({
             data: {
                 id: id || Math.random().toString(36).substring(2, 15),
                 date, formattedDate, content, flashSummary, aiAnalysis,
                 dominantCategory, newsCount, generationTime, isPublic,
-                userId, // <-- SECURITY FIX: Using the authenticated user's ID
+                userId,
                 ReviewToTag: {
-                    create: tags.map((tag: { id: string }) => ({ tags: { connect: { id: tag.id } } })),
+                    create: tags.map((tag: { id: string }) => ({
+                        tags: { connect: { id: tag.id } },
+                    })),
                 },
                 sources: {
                     create: (sources || []).map((source: { title: string; uri: string }) => ({
@@ -97,9 +109,9 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json(newReview, { status: 201 });
-    } catch (error: any) {
-        if (error.name === 'ZodError') {
-            return NextResponse.json({ error: 'Données invalides', details: error.errors }, { status: 400 });
+    } catch (error: unknown) {
+        if (typeof error === 'object' && error !== null && 'name' in error && error.name === 'ZodError') {
+            return NextResponse.json({ error: 'Données invalides' }, { status: 400 });
         }
         console.error('Error creating review:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

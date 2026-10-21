@@ -1,204 +1,107 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# TechPulse AI
 
-# TechPulse AI : Revue Quotidienne
+> Plateforme de veille technologique assistée par IA : génération, consultation et analyse de revues tech.
 
-> Générez, archivez et analysez l'actualité tech quotidienne avec la précision de l'IA.
+**État du dépôt :** application en cours de stabilisation. Les fonctionnalités décrites dans l'historique du projet ne doivent pas toutes être considérées comme opérationnelles sans validation récente.
 
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript)](https://www.typescriptlang.org/)
-[![Vite](https://img.shields.io/badge/Vite-6.2-646CFF?logo=vite)](https://vitejs.dev/)
-[![Google Gemini](https://img.shields.io/badge/Google_Gemini-2.5_Flash-4285F4?logo=google)](https://ai.google.dev/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.3-4169E1?logo=postgresql)](https://www.postgresql.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-5.15-2D3748?logo=prisma)](https://www.prisma.io/)
+## Stack actuellement déclarée
 
-## Aperçu
+- Next.js App Router
+- React 18
+- TypeScript
+- PostgreSQL et Prisma
+- Better Auth
+- Google Gemini
+- Tailwind CSS 3
+- pnpm
 
-TechPulse AI est une application web moderne qui révolutionne la veille technologique en automatisant la création de revues quotidiennes grâce à l'intelligence artificielle Google Gemini.
+Les versions exactes sont celles du manifeste `package.json` et du fichier de verrouillage. Le dépôt contient des traces d'une architecture antérieure basée sur Vite et des dossiers `client/` et `server/`; ces références sont en cours de nettoyage.
 
-### Fonctionnalités principales
+## Fonctionnalités et état de validation
 
-- **Génération automatique** : L'IA recherche et synthétise les actualités tech du jour
-- **Sources vérifiées** : Utilise Google Search Grounding pour des informations fiables
-- **Analyse critique** : Chaque revue inclut un avis subjectif et stratégique de l'IA
-- **Timeline interactive** : Visualisez vos revues sous forme de fil d'actualité
-- **Analytics** : Métriques et statistiques sur vos revues
-- **Export facile** : Copiez le contenu pour Word, Notion, Email en un clic
-- **Historique de recherche** : Toutes les recherches sont sauvegardées avec horodatage
-- **Persistance des données** : Toutes les données sont stockées dans une base PostgreSQL
-- **Multi-utilisateurs** : Plusieurs personnes peuvent utiliser l'application simultanément
-- **Personnalisation de l'IA** : Ajustez le style, le ton et la profondeur des analyses
-- **Suivi des visiteurs** : Comptage des visiteurs quotidiens et en temps réel
+Le code contient des routes et composants liés à :
 
-### Catégories couvertes
+- la génération de revues avec Gemini ;
+- la consultation et la recherche de revues ;
+- les catégories, tags et sources ;
+- l'historique, les favoris et les réglages ;
+- les statistiques et tendances ;
+- les commentaires, notifications et liens de partage ;
+- l'authentification et l'export de données.
 
-- Search & Web
-- Web & Mobile Development
-- Cloud Computing (AWS, Azure, GCP)
-- DevOps & Platform Engineering
-- Cybersécurité
-- Intelligence Artificielle
+La présence d'un composant ou d'une route ne garantit pas que le parcours soit complet. La génération persistante, les autorisations, les intégrations et plusieurs interactions d'interface nécessitent une validation spécifique.
 
-## Documentation complète
+## Prérequis
 
-Une documentation détaillée est disponible dans le dossier [`docs/`](./docs/) :
+- Une version de Node.js compatible avec la version de Next.js retenue par le projet.
+- pnpm, version compatible avec le fichier de verrouillage.
+- PostgreSQL.
+- Une clé Google Gemini.
+- Les variables nécessaires à Better Auth et Resend pour les fonctions d'authentification par e-mail.
 
-1. [**Vue d'ensemble**](./docs/01-vue-ensemble.md) - Présentation du projet et cas d'usage
-2. [**Installation et Configuration**](./docs/02-installation.md) - Guide de démarrage rapide
-3. [**Architecture du Projet**](./docs/03-architecture.md) - Structure et modèle de données
-4. [**Guide d'Utilisation**](./docs/04-guide-utilisation.md) - Comment utiliser l'application
-5. [**API et Services**](./docs/05-api-services.md) - Fonctionnement technique de l'API Gemini
-6. [**Composants React**](./docs/06-composants.md) - Documentation des composants
-7. [**Personnalisation**](./docs/07-personnalisation.md) - Adapter l'app à vos besoins
-8. [**Déploiement**](./docs/08-deploiement.md) - Mettre en production
-9. [**FAQ et Dépannage**](./docs/09-faq.md) - Résoudre les problèmes courants
+## Configuration locale
 
-## Démarrage rapide
+1. Cloner le dépôt et se placer sur la branche de travail validée.
+2. Installer pnpm si nécessaire.
+3. Installer les dépendances avec `pnpm install --frozen-lockfile`.
+4. Créer un fichier `.env.local` à partir des variables documentées dans la configuration serveur.
+5. Configurer une base PostgreSQL **de développement**, jamais une base de production pour les essais.
+6. Valider le schéma Prisma avant d'appliquer les migrations.
+7. Démarrer l'application avec `pnpm dev`.
 
-### Prérequis
+Exemple indicatif de variables ; les noms doivent correspondre au code et être harmonisés durant la stabilisation :
 
-- **Node.js** 18+ ([Télécharger](https://nodejs.org/))
-- **PostgreSQL** 13+ ([Télécharger](https://www.postgresql.org/))
-- Une clé API Google Gemini ([Obtenir gratuitement](https://ai.google.dev/))
-
-### Installation
-
-```bash
-# 1. Cloner le projet
-git clone <url-du-repo>
-cd techpulse-ai
-
-# 2. Installer les dépendances
-npm install
-
-# 3. Configurer la base de données
-# Créez une base de données PostgreSQL et configurez les variables d'environnement
-
-# 4. Configurer les clés API
-# Éditez le fichier .env.local et ajoutez :
-# GEMINI_API_KEY=votre_clé_api_ici
-# DATABASE_URL=postgresql://utilisateur:motdepasse@localhost:5432/nomdelabase
-
-# 5. Appliquer les migrations
-npx prisma migrate dev
-
-# 6. Lancer l'application
-npm run dev
+```env
+DATABASE_URL=
+DATABASE_URL_UNPOOLED=
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=http://localhost:3000
+GOOGLE_GENERATIVE_AI_API_KEY=
+GEMINI_API_KEY=
+RESEND_API_KEY=
+RESEND_FROM=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
 ```
 
-L'application sera accessible sur **http://localhost:3000**
+Ne commitez jamais de secrets, de jetons ou de fichiers d'environnement réels.
 
-## Captures d'écran
+## Commandes
 
-### Générateur de revues
-Interface intuitive pour créer des revues en quelques secondes.
+Les scripts disponibles doivent être consultés dans `package.json`. Les commandes de validation seront harmonisées dans le cadre de la remise en état. Ne considérez pas une étape CI comme validée tant qu'elle n'a pas réellement été exécutée avec succès.
 
-### Timeline
-Visualisez toutes vos revues sous forme de fil chronologique.
+## Documentation
 
-### Vue détaillée
-Contenu structuré avec l'avis de l'IA et sources vérifiées.
+Consultez les documents disponibles :
 
-## Technologies utilisées
+- [Vision et mission](./docs/01-vision-et-mission.md)
+- [Vue d'ensemble](./docs/02-vue-ensemble.md)
+- [Installation](./docs/03-installation.md)
+- [Architecture](./docs/04-architecture.md)
+- [API et services](./docs/05-api-services.md)
+- [Composants](./docs/06-composants.md)
+- [Base de données](./docs/07-database.md)
+- [Guide d'utilisation](./docs/08-guide-utilisation.md)
+- [Plan de stabilisation](./docs/REMEDIATION_PLAN.md)
 
-- **Frontend** : React 19, TypeScript
-- **Backend** : Node.js, PostgreSQL
-- **ORM** : Prisma
-- **Build Tool** : Vite 6.2
-- **IA** : Google Gemini 2.5 Flash
-- **Styling** : Tailwind CSS (utility classes)
-- **Déploiement** : Vercel, Netlify, ou VPS
+Les documents historiques doivent être confrontés au code actuel avant d'être utilisés comme instructions de déploiement.
 
-## Scripts disponibles
+## Sécurité et livraison
 
-```bash
-npm run dev      # Lancer le serveur de développement
-npm run build    # Compiler pour la production
-npm run preview  # Prévisualiser le build de production
-npm run migrate  # Appliquer les migrations de base de données
-```
-
-## Configuration de l'API
-
-1. Obtenez une clé API gratuite sur [Google AI Studio](https://ai.google.dev/)
-2. Créez/éditez le fichier `.env.local` à la racine :
-   ```env
-   GEMINI_API_KEY=votre_clé_api_ici
-   DATABASE_URL=postgresql://utilisateur:motdepasse@localhost:5432/nomdelabase
-   ```
-3. Redémarrez le serveur de développement
-
-**Note** : Le plan gratuit offre 60 requêtes/minute, largement suffisant pour un usage personnel.
-
-## Déploiement
-
-### Vercel (Recommandé)
-
-```bash
-npm install -g vercel
-vercel login
-vercel --prod
-```
-
-### Netlify
-
-```bash
-npm install -g netlify-cli
-netlify login
-netlify deploy --prod
-```
-
-Consultez le [guide de déploiement complet](./docs/08-deploiement.md) pour plus d'options.
+- Ne pas exposer les revues privées via les routes publiques.
+- Ne jamais faire confiance à un identifiant utilisateur fourni par le client pour définir les droits d'accès.
+- Tester les migrations sur une base isolée avant tout déploiement.
+- Exécuter les tests de sécurité, le typecheck, les tests automatisés et le build avant une livraison.
+- Les déploiements de production doivent être déclenchés uniquement par un workflow réel et vérifiable.
 
 ## Contribution
 
-Les contributions sont les bienvenues ! Pour contribuer :
-
-1. Forkez le projet
-2. Créez une branche (`git checkout -b feature/amelioration`)
-3. Committez vos changements (`git commit -m 'Ajout d'une fonctionnalité'`)
-4. Pushez vers la branche (`git push origin feature/amelioration`)
-5. Ouvrez une Pull Request
+1. Créer une branche dédiée à la modification.
+2. Ajouter ou mettre à jour les tests associés.
+3. Exécuter les contrôles disponibles et noter explicitement ceux qui n'ont pas pu être exécutés.
+4. Ouvrir une pull request avec le périmètre, les risques et les résultats de validation.
+5. Ne pas fusionner une migration de base de données sans plan de déploiement et de retour arrière.
 
 ## Licence
 
-Ce projet est sous licence privée. Tous droits réservés.
-
-## Support
-
-- [Documentation complète](./docs/)
-- [Signaler un bug](../../issues)
-- [Proposer une fonctionnalité](../../issues)
-- [FAQ et Dépannage](./docs/09-faq.md)
-
-## Liens utiles
-
-- [Google AI Studio](https://ai.studio/apps/drive/1ebuyfGTJeZO90K_XstXRH7P2dZ0IPDlF)
-- [Documentation Gemini](https://ai.google.dev/docs)
-- [Documentation React](https://react.dev/)
-- [Documentation Vite](https://vitejs.dev/)
-- [Documentation Prisma](https://www.prisma.io/docs/)
-
-## Roadmap
-
-- [x] Sauvegarde persistante dans PostgreSQL
-- [x] Export PDF des revues
-- [x] Partage par lien unique
-- [x] Système de favoris
-- [x] Mode sombre/clair
-- [x] Personnalisation de l'IA
-- [x] Suivi des visiteurs
-- [ ] Intégrations (Slack, Email, Notion)
-- [ ] Backend API avec authentification
-- [ ] Support multi-langues
-
----
-
-<div align="center">
-
-**Développé avec passion et propulsé par Google Gemini AI**
-
-[Documentation](./docs/) • [Démarrage rapide](#démarrage-rapide) • [Support](#support)
-
-</div>
+Projet privé — tous droits réservés.

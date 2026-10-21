@@ -1,26 +1,63 @@
-name: Security Scan 🚨
+name: Security Scan
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - feature/nextjs-migration
+      - main
+      - staging
+      - prod
+  pull_request:
+    branches:
+      - feature/nextjs-migration
+      - main
+      - staging
+      - prod
   schedule:
     - cron: '0 0 * * 1'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: security-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  security:
+  dependency-audit:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      
-      - name: TruffleHog Secrets Scan
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit production dependencies
+        run: pnpm audit --prod
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan repository for secrets
         uses: trufflesecurity/trufflehog@v3.63.0
         with:
           path: ./
           base: ${{ github.event.repository.default_branch }}
           head: HEAD
-
-      - name: NPM Audit Server
-        run: cd server && npm audit --audit-level=high
-        
-      - name: NPM Audit Client
-        run: cd client && npm audit --audit-level=high

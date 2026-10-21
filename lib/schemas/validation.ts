@@ -85,11 +85,6 @@ export const updateSettingsSchema = z.object({
     }).optional(),
 });
 
-// Visitor stats validation schemas
-export const visitorActionSchema = z.object({
-    action: z.enum(['increment_daily', 'increment_current', 'decrement_current']),
-});
-
 // AI Generation Schema
 export const generateReviewSchema = z.object({
     date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Format de date invalide'),
@@ -116,28 +111,6 @@ export const trendAnalysisSchema = z.object({
 export const createCommentSchema = z.object({
     content: z.string().min(1, 'Le commentaire ne peut pas être vide').max(1000, 'Commentaire trop long'),
     reviewId: z.string().min(1),
-});
-
-// Notifications
-export const updateNotificationSchema = z.object({
-    read: z.boolean(),
-});
-
-// Integrations
-export const createIntegrationSchema = z.object({
-    provider: z.enum(['slack', 'discord', 'email', 'notion']),
-    config: z.record(z.string(), z.any()), // JSON config depend de provider
-});
-
-// Sharing
-export const createShareLinkSchema = z.object({
-    resourceId: z.string().min(1),
-});
-
-// Analytics
-export const trackEventSchema = z.object({
-    event: z.string().min(1),
-    metadata: z.record(z.string(), z.any()).optional(),
 });
 
 // Exports
