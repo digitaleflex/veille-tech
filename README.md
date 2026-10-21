@@ -72,7 +72,19 @@ Les scripts disponibles doivent être consultés dans `package.json`. Les comman
 
 ## Documentation
 
-Consultez le dossier [`docs/`](./docs/) pour les documents disponibles. Certains liens et guides historiques peuvent encore refléter l'ancienne architecture ; ils seront mis à jour au fur et à mesure de la stabilisation.
+Consultez les documents disponibles :
+
+- [Vision et mission](./docs/01-vision-et-mission.md)
+- [Vue d'ensemble](./docs/02-vue-ensemble.md)
+- [Installation](./docs/03-installation.md)
+- [Architecture](./docs/04-architecture.md)
+- [API et services](./docs/05-api-services.md)
+- [Composants](./docs/06-composants.md)
+- [Base de données](./docs/07-database.md)
+- [Guide d'utilisation](./docs/08-guide-utilisation.md)
+- [Plan de stabilisation](./docs/REMEDIATION_PLAN.md)
+
+Les documents historiques doivent être confrontés au code actuel avant d'être utilisés comme instructions de déploiement.
 
 ## Sécurité et livraison
 
